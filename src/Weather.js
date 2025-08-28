@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
-import ClipLoader from "react-spinners/ClipLoader";
-import { BeatLoader, FadeLoader } from "react-spinners";
+import { BeatLoader } from "react-spinners";
 
 export default function Weather() {
   function displayWeather(response) {
