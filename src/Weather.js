@@ -1,10 +1,15 @@
 import React from "react";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
+import { BeatLoader, FadeLoader } from "react-spinners";
 
 export default function Weather() {
   function displayWeather(response) {
-    alert(`The weather in New York is ${response.data.temperature.current}°C`);
+    alert(
+      `The weather in New York is ${Math.round(
+        response.data.temperature.current
+      )}°C`
+    );
   }
   let apiKey = "10fa90a2o832483bf734tfe8a27fcdad";
   let units = "metric";
@@ -13,7 +18,7 @@ export default function Weather() {
   return (
     <div>
       <h2>Hello from Weather</h2>
-      <ClipLoader color="#36d7b7" size={50} />
+      <BeatLoader color="#1d8de7" size={15} />
     </div>
   );
 }
