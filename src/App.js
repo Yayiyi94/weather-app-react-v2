@@ -11,12 +11,15 @@ function App() {
 
         <footer>
           Coded by Yadira DLTR, code hosted on
-          <a href="#" target="_blank">
+          <a
+            href="https://github.com/Yayiyi94/weather-app-react-v2"
+            target="_blank"
+          >
             {" "}
             GitHub
           </a>{" "}
           and website hosted on
-          <a href="#" target="_blank">
+          <a href="https://weather-react-ydltr.netlify.app" target="_blank">
             {" "}
             Netfly
           </a>
