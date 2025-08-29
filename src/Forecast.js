@@ -4,14 +4,18 @@ import "./Weather.css";
 import ForecastDay from "./ForecastDay";
 
 export default function Forecast(props) {
-  let [loaded, setLoaded] = useState(false);
-  let [forecast, setForecast] = useState(null);
+  const [loaded, setLoaded] = useState(false);
+  const [forecast, setForecast] = useState([]);
 
   function handleResponse(response) {
-    // SheCodes devuelve la data en response.data.daily
+    if (!response.data || !response.data.daily) {
+      console.error("No se encontró 'daily' en la respuesta", response.data);
+      return;
+    }
+
     const dailyForecasts = response.data.daily.map((day) => {
       return {
-        dt: day.time, // fecha
+        dt: day.time,
         temp: {
           max: day.temperature.maximum,
           min: day.temperature.minimum,
@@ -25,14 +29,13 @@ export default function Forecast(props) {
       };
     });
 
-    // Tomamos solo los próximos 5 días
     setForecast(dailyForecasts.slice(0, 5));
     setLoaded(true);
   }
 
   useEffect(() => {
     function loadForecast() {
-      if (!props.coordinates) return; // seguridad, por si aún no cargan
+      if (!props.coordinates) return;
 
       let apiKey = "10fa90a2o832483bf734tfe8a27fcdad";
       let longitude = props.coordinates.lon;
@@ -41,34 +44,18 @@ export default function Forecast(props) {
       let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lon=${longitude}&lat=${latitude}&key=${apiKey}&units=metric`;
 
       setLoaded(false);
-      axios.get(apiUrl).then(handleResponse);
+      axios
+        .get(apiUrl)
+        .then(handleResponse)
+        .catch((err) => {
+          console.error("Error fetching forecast:", err);
+        });
     }
 
     loadForecast();
   }, [props.coordinates]);
 
-  if (loaded) {
-    return (
-      <div className="WeatherForecast mt-4">
-        <div className="card">
-          <div className="card-header">
-            <h5 className="card-title mb-0">5-Day Forecast</h5>
-          </div>
-          <div className="card-body">
-            <div className="row g-2">
-              {forecast.map(function (dailyForecast, index) {
-                return (
-                  <div className="col" key={index}>
-                    <ForecastDay data={dailyForecast} />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  } else {
+  if (!loaded) {
     return (
       <div className="WeatherForecast mt-4">
         <div className="card">
@@ -85,4 +72,23 @@ export default function Forecast(props) {
       </div>
     );
   }
+
+  return (
+    <div className="WeatherForecast mt-4">
+      <div className="card">
+        <div className="card-header">
+          <h5 className="card-title mb-0">5-Day Forecast</h5>
+        </div>
+        <div className="card-body">
+          <div className="row g-2">
+            {forecast.map((dailyForecast, index) => (
+              <div className="col" key={index}>
+                <ForecastDay data={dailyForecast} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

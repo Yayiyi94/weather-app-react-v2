@@ -1,21 +1,28 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import "./Weather.css";
 
-export default function Weather() {
+export default function Weather({ onWeatherUpdate }) {
   const [city, setCity] = useState("City");
   const [weather, setWeather] = useState({});
 
   function displayWeather(response) {
-    setWeather({
+    const data = {
       temperature: Math.round(response.data.temperature.current),
       description: response.data.condition.description,
       humidity: response.data.temperature.humidity,
       wind: response.data.wind.speed,
       icon: response.data.condition.icon,
       iconUrl: response.data.condition.icon_url,
-    });
+      coordinates: response.data.coordinates, // 👈 importante para Forecast
+    };
+
+    setWeather(data);
+
+    // Avisamos al padre (App.js) que tenemos coordenadas
+    if (typeof onWeatherUpdate === "function") {
+      onWeatherUpdate(data);
+    }
   }
 
   function HandleSubmit(event) {
@@ -37,22 +44,19 @@ export default function Weather() {
     setCity(event.target.value);
   }
 
-  let form = (
-    <form onSubmit={HandleSubmit} className="searchEngine">
-      <input
-        type="search"
-        placeholder="Enter a city..."
-        required
-        className="search-form-input"
-        onChange={updateCity}
-      />
-      <input type="submit" value="Search" className="search-button" />
-    </form>
-  );
-
   return (
     <div className="Weather">
-      {form}
+      <form onSubmit={HandleSubmit} className="searchEngine">
+        <input
+          type="search"
+          placeholder="Enter a city..."
+          required
+          className="search-form-input"
+          onChange={updateCity}
+        />
+        <input type="submit" value="Search" className="search-button" />
+      </form>
+
       <div className="weather-overview">
         <div>
           <h1 className="CityOverview" id="city">
@@ -76,11 +80,13 @@ export default function Weather() {
         </div>
         <div className="city-temperature">
           <div id="weather-icon">
-            <img
-              src={weather.iconUrl}
-              alt={weather.icon}
-              className="temperature-icon"
-            />
+            {weather.iconUrl && (
+              <img
+                src={weather.iconUrl}
+                alt={weather.icon}
+                className="temperature-icon"
+              />
+            )}
           </div>
           <div className="temperature-element" id="temperature-element">
             {weather.temperature}
@@ -88,7 +94,6 @@ export default function Weather() {
           <div className="temperature-degree">°C</div>
         </div>
       </div>
-      <div className="weather-forecast-overview" id="forecast-overview"></div>
     </div>
   );
 }
