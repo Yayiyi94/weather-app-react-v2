@@ -1,16 +1,8 @@
 import "./App.css";
 import Weather from "./Weather";
-import Forecast from "./Forecast";
 import { useState } from "react";
 
 function App() {
-  const [coordinates, setCoordinates] = useState(null);
-
-  // Esta función recibe los datos del clima desde Weather
-  function handleWeatherUpdate(weatherData) {
-    setCoordinates(weatherData.coordinates);
-  }
-
   return (
     <div className="App">
       <header className="App-header">
