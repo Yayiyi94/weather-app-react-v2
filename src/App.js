@@ -14,12 +14,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {/* Weather avisa cuando hay datos */}
-        <Weather onWeatherUpdate={handleWeatherUpdate} />
-
-        {/* Forecast solo aparece cuando hay coordenadas */}
-        {coordinates && <Forecast coordinates={coordinates} />}
-
+        <Weather defaultCity="..." />
         <footer>
           Coded by Yadira DLTR, code hosted on{" "}
           <a
